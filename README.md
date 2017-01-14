@@ -9,4 +9,5 @@ dtparser = DateExtraction.new()
 date = dtparser.parse_date "Monday 27 October, 2011 11:30h"
 
 p date
+
 //It will print: 2011-10-27 11:30:00
