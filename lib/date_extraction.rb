@@ -601,6 +601,46 @@ class DateExtraction
     end
   end
 
+  def today
+    @options=({:nomonth => false})
+    parse_date(Time.now.strftime("%Y-%m-%d 00:00:00"), false)
+  end
+
+  def months_to
+    @months_to
+  end
+
+  def get_hour(date)
+    _, hourinfo = date.split(' ')
+    hour, minute, _ = hourinfo.split(':')
+    [hour.to_i, minute.to_i]
+  end
+
+  def get_day(date)
+    day, _ = date.split(' ')
+    day
+  end
+
+  def shift_date_12(date)
+    hour, _ = get_hour(date)
+    if hour < 12
+      date.gsub!(/ [0-9]{2}\:/, " #{(hour+12).to_s}:")
+    end
+    date
+  end
+
+  def shift_date_am_12(date)
+    hour, _ = get_hour(date)
+    if hour == 12
+      date.gsub!(/ [0-9]{2}\:/, " 00:")
+    end
+    date
+  end
+
+  def shift12h(date)
+    shift_date_12(date)
+  end
+
   def day_is_today?(day_name)
     today = Time.now
     today.strftime("%A").downcase == day_name.downcase
@@ -706,6 +746,11 @@ class DateExtraction
     end
   end
 
+  def strtotime date
+    @options=({:nomonth => false})
+    parse_date(date, false)
+  end
+
   def parse_date(text, format = "%Y-%m-%d %H:%M:%S")
     begin
       parse_date_internal(text, format)
@@ -715,50 +760,5 @@ class DateExtraction
       p "ERROR: Exception parsing date = '#{text}'"
       return "1970-01-01 00:00:00"
     end
-  end
-
-  def strtotime date
-    @options=({:nomonth => false})
-    parse_date(date, false)
-  end
-
-  def today
-    @options=({:nomonth => false})
-    parse_date(Time.now.strftime("%Y-%m-%d 00:00:00"), false)
-  end
-
-  def months_to
-    @months_to
-  end
-
-  def get_hour(date)
-    _, hourinfo = date.split(' ')
-    hour, minute, _ = hourinfo.split(':')
-    [hour.to_i, minute.to_i]
-  end
-
-  def get_day(date)
-    day, _ = date.split(' ')
-    day
-  end
-
-  def shift_date_12(date)
-    hour, _ = get_hour(date)
-    if hour < 12
-      date.gsub!(/ [0-9]{2}\:/, " #{(hour+12).to_s}:")
-    end
-    date
-  end
-
-  def shift_date_am_12(date)
-    hour, _ = get_hour(date)
-    if hour == 12
-      date.gsub!(/ [0-9]{2}\:/, " 00:")
-    end
-    date
-  end
-
-  def shift12h(date)
-    shift_date_12(date)
   end
 end
